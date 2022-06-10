@@ -9,7 +9,7 @@ async function initialize(passport) {
       async (email, password, done) => {
           console.log(email, password);
           pool.query(
-              `SELECT * FROM Users WHERE email = $1`,
+              `SELECT * FROM "public.Users" WHERE email = $1`,
               [email],
               (err, results) => {
                   if (err) {

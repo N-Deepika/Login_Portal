@@ -9,7 +9,6 @@ const passport = require("passport");
 const session = require("express-session");
 const flash = require("express-flash");
 const methodOverride = require("method-override");
-
 const PORT = process.env.PORT || 4000;
 const app = express();
 
@@ -19,7 +18,7 @@ initializePassport(
   passport
 );
 
-app.set("view-engine", "ejs");
+app.set("view engine", "ejs");
 app.use(express.urlencoded({ extended: true }));
 app.use(flash());
 app.use(methodOverride("_method"));
@@ -68,7 +67,7 @@ app.post("/register", checkNotAuthenticated, async (req, res) => {
   }
 
   if (password.length < 6) {
-    errors.push({ message: "Password must be a least 6 characters long" });
+      errors.push({ message: "password length should be greater than 6"})
   }
 
 
@@ -80,7 +79,7 @@ app.post("/register", checkNotAuthenticated, async (req, res) => {
     console.log(hashedPassword);
     // Validation passed
     pool.query(
-        `SELECT * FROM users
+        `SELECT * FROM "public.Users"
         WHERE email = $1`,
         [email],
         (err, results) => {
@@ -95,9 +94,9 @@ app.post("/register", checkNotAuthenticated, async (req, res) => {
             });
           } else {
             pool.query(
-                `INSERT INTO users (username, email, password)
+                `INSERT INTO "public.Users" (username, email, password)
                 VALUES ($1, $2, $3)
-                RETURNING id, password`,
+                RETURNING password`,
                 [username, email, hashedPassword],
                 (err, results) => {
                   if (err) {
